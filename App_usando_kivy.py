@@ -27,7 +27,7 @@ class app(App):
         agregar_boton.bind(on_press = self.agregar_producto)
         layout.add_widget(agregar_boton)
 
-        agregar_boton2 = Button(text = "Gastos totales", size_hint = (0.5, None), height = 90, pos_hint = {"center_x": 0.5}, background_color= (0,1,1,1,))
+        agregar_boton2 = Button(text = "Gastos totales", size_hint = (0.5, None), height = 100, pos_hint = {"center_x": 0.5}, background_color= (0,1,1,1,))
         agregar_boton2.bind (on_press = self.agregar_producto)
         layout.add_widget(agregar_boton2)
 
