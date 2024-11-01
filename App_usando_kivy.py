@@ -64,5 +64,6 @@ class app(App):
     def mostrar_total (self, instace): 
         total = sum(self.lista_precios)
         self.resultado_label.text = f"Total gastado: {total:.2f}"
+        
 if __name__ == '__main__': 
     app().run()
