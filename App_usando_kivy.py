@@ -33,13 +33,13 @@ class app(App):
 
         scroll_view = ScrollView(size_hint= (1, None), height = 200)
         self.lista_producto = BoxLayout (orientation = 'vertical', size_hint_y= None)
-        self.lista_producto.bind (minimun_height = self.lista_producto.setter('height'))
+        self.lista_producto.bind (minimum_height = self.lista_producto.setter('height'))
         scroll_view.add_widget(self.lista_producto)
         layout.add_widget(scroll_view)
 
-        scrool_view = ScrollView(size_hint= (1, None), height = 200) 
+        scroll_view = ScrollView(size_hint= (1, None), height = 200) 
         self.lista_precios = BoxLayout (orientation = 'vertical', size_hint_y = None)
-        self.lista_precios.bind (minimun_height = self.lista_precios.setter('height'))
+        self.lista_precios.bind (minimum_height = self.lista_precios.setter('height'))
         scroll_view.add_widget(self.lista_precios)
         layout.add_widget(scroll_view)
 
@@ -49,10 +49,11 @@ class app(App):
 
     def agregar_producto(self, instance):
         producto = self.producto_input.text
-#        try: 
-#            costo = float(self.costo_input.text)
-#            self.suma_total += costo
-#            self.suma_lebel.text = f"Suma total: {self.suma_total}"
+
+        costo = float(self.costo_ingreso.text)
+        self.suma_total += costo
+        self.suma_label.text = f"Total: {self.suma_total}"
+        self.lista_precios.add_widget(self.suma_label)
 
 
 
