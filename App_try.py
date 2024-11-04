@@ -7,7 +7,7 @@ from kivy.uix.textinput import TextInput
 from kivy.core.window import Window 
 
 class Aplication(App): 
-    def build(self): 
+    def build(self):  
 
         Window.clearcolor= (1,1,1,1)
 
