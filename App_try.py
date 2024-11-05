@@ -16,12 +16,12 @@ class Pantall_Inicio (Screen):
         Welcome_label= Label (text= "Programa de gastos", font_size = '30sp', color = (0,0,0,1))
         layout.add_widget(Welcome_label)
 
-        boton_registo = Button(text = "Ir a registros", pos_hint = {"center_x": 0.5}, background_color = (0,1,0,1))
+        boton_registo = Button(text = "Ir a registros", pos_hint = {"center_x": 0.5}, background_color = (0.6, 1, 0.6, 1))
         boton_registo.bind(on_press = self.cambiar_registro)
         layout.add_widget(boton_registo)
 
-        boton_historial = Button(text = "Ir a Hitorial de gastos", pos_hint= {"center_x": 0.5}, background_color = (0,1,0,1))
-        boton_historial.bind = Label (on_press = self.cambiar_historial)
+        boton_historial = Button(text = "Ir a Hitorial de gastos", pos_hint= {"center_x": 0.5}, background_color = (0.5, 1, 0, 1))
+        boton_historial.bind(on_press = self.cambiar_historial)
         layout.add_widget(boton_historial)
 
         self.add_widget(layout)
@@ -36,43 +36,43 @@ class RegistroGastos(Screen):
     def __init__(self, **kwargs):  
         super().__init__(**kwargs)
 
-        Window.clearcolor= (1,1,1,1)
+        Window.clearcolor= (0,0,0,1)
 
         self.layout = BoxLayout(orientation = 'vertical', padding = 20, spacing = 10)
 
-        self.producto_input = TextInput(hint_text = "Ingrese el producto", font_size = '16sp', multiline = False, size_hint_y= None, height = 60)
+        self.producto_input = TextInput(hint_text = "Ingrese el producto", multiline = False, font_size = '16sp',size_hint = (0.5, None), size_hint_y = None, height = 80)
         self.layout.add_widget(self.producto_input)
 
-        self.precio_input = TextInput(hint_text = "Ingrese el costo del producto", font_size = '16sp', multiline = False, size_hint_y = None, height = 60) 
+        self.precio_input = TextInput(hint_text = "Ingrese el costo del producto", multiline = False, font_size = '16sp',size_hint = (0.5, None), size_hint_y = None, height = 80) 
         self.layout.add_widget(self.precio_input)
 
-        agregar_button = Button(text = "Agregar producto", size_hint= (0.5, None), height = 100, pos_hint = {"center_x":0.5}, background_color = (0,1,0,1))
-        agregar_button.bind(on_press = self.agregar_producto)
+        agregar_button = Button(text="Agregar producto", size_hint= (0.5, None), height = 100, pos_hint = {"center_x":0.5}, background_color = (0,1,0,1))
+        agregar_button.bind(on_press=self.agregar_producto)
         self.layout.add_widget(agregar_button)
 
-        self.resultado_label = Label (text = "")
+        self.resultado_label = Label(text="")
         self.layout.add_widget(self.resultado_label)
 
         boton_volver = Button(text = "Volver",pos_hint = {"center_x": 0.5}, background_color = (0,1,0,1))
-        boton_volver.bind (on_press = self.volver_registro)
+        boton_volver.bind(on_press = self.volver_registro)
         self.layout.add_widget(boton_volver)
 
         self.add_widget(self.layout)
 
         self.lista_precios = []
-        self.producto_layout = None
 
     def volver_registro (self , instance):
         self.manager.current = 'inicio'
     
-    def agregar_producto(self,instance): 
+    def agregar_producto(self,instance):  
+        nom_product  =  self.producto_input.text
         try: 
-            nom_product  = self.producto_input.text
             precio = float(self.precio_input.text)
             self.lista_precios.append ((nom_product, precio))
-            self.producto_input = ""
-            self.precio_input = ""
-            self.resultado_label.text = "Agregado"
+
+            self.producto_input.text = ""
+            self.precio_input.text = ""
+            self.resultado_label.text = "Producto Agregado"
         except ValueError:
             self.resultado_label.text= "Ingrese un precio valido"
 
@@ -97,7 +97,7 @@ class Historial (Screen):
         boton_volver = Button(text = "Volver",pos_hint = {"center_x": 0.5}, background_color = (0,1,0,1))
         boton_volver.bind (on_press = self.volver_registro)
         layout.add_widget(boton_volver)
-        
+
         self.add_widget(layout)
 
     def volver_registro (self , instance):
@@ -108,7 +108,6 @@ class Historial (Screen):
         self.total_label.text = f"Total gastado: ${total:.2f}"
 
     def on_enter(self):
-
         self.productos_layout.clear_widgets()
         productos = App.get_running_app().root.get_screen('registro').lista_precios
         for nombre, precio in productos: 
