@@ -4,37 +4,67 @@ from kivy.uix.label import Label
 from kivy.uix.scrollview import ScrollView
 from kivy.uix.button import Button 
 from kivy.uix.textinput import TextInput
+from kivy.uix.gridlayout import GridLayout
+from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.core.window import Window 
 
-class Aplication(App): 
-    def build(self):  
+class Pantall_Inicio (Screen):
+    def __init__ (self, **kwargs):
+
+        super().__init__(**kwargs)
+        layout  = BoxLayout(orientation = 'vertical', padding = 20, spacing = 10)
+        Welcome_label= Label (text= "Programa de gastos", font_size = '30sp', color = (0,0,0,1))
+        layout.add_widget(Welcome_label)
+
+        boton_registo = Button(text = "Ir a registros", pos_hint = {"center_x": 0.5}, background_color = (0,1,0,1))
+        boton_registo.bind(on_press = self.cambiar_registro)
+        layout.add_widget(boton_registo)
+
+        boton_historial = Button(text = "Ir a Hitorial de gastos", pos_hint= {"center_x": 0.5}, background_color = (0,1,0,1))
+        boton_historial.bind = Label (on_press = self.cambiar_historial)
+        layout.add_widget(boton_historial)
+
+        self.add_widget(layout)
+
+    def cambiar_registro (self, instance): 
+        self.manager.current = 'registro'
+
+    def cambiar_historial (self, instance):
+        self.manager.current = 'historial'
+
+class RegistroGastos(Screen): 
+    def __init__(self, **kwargs):  
+        super().__init__(**kwargs)
 
         Window.clearcolor= (1,1,1,1)
 
-        layout = BoxLayout(orientation = 'vertical', padding = 20, spacing = 10)
-
-        intruction_label = Label(text = "Ingresa el producto y su costo", font_size = '30sp', color = (0,0,0,1))
-        layout.add_widget(intruction_label)
+        self.layout = BoxLayout(orientation = 'vertical', padding = 20, spacing = 10)
 
         self.producto_input = TextInput(hint_text = "Ingrese el producto", font_size = '16sp', multiline = False, size_hint_y= None, height = 60)
-        layout.add_widget(self.producto_input)
+        self.layout.add_widget(self.producto_input)
 
         self.costo_input = TextInput(hint_text = "Ingrese el costo del producto", font_size = '16sp', multiline = False, size_hint_y = None, height = 60) 
-        layout.add_widget(self.costo_input)
+        self.layout.add_widget(self.costo_input)
 
-        agregar_button1 = Button(text = "Agregar producto", size_hint= (0.5, None), height = 100, pos_hint = {"center_x":0.5}, background_color = (0,1,0,1))
-        agregar_button1.bind(on_press = self.agregar_producto)
-        layout.add_widget(agregar_button1)
+        agregar_button = Button(text = "Agregar producto", size_hint= (0.5, None), height = 100, pos_hint = {"center_x":0.5}, background_color = (0,1,0,1))
+        agregar_button.bind(on_press = self.agregar_producto)
+        self.layout.add_widget(agregar_button)
 
-        scroll_view = ScrollView(size_hint = (1, None), height = 200)
-        self.lista_productos = BoxLayout (orientation = 'vertical', size_hint_y = None)
-        self.lista_productos.bind (minimum_height = self.lista_productos.setter('height'))
-        scroll_view.add_widget(self.lista_productos)
-        layout.add_widget(scroll_view)
+        self.resultado_label = Label (text = "")
+        self.layout.add_widget(self.resultado_label)
 
-        self.suma_total = 0 
+        boton_volver = Button(text = "Volver",pos_hint = {"center_x": 0.5}, background_color = (0,1,0,1))
+        boton_volver.bind (on_press = self.volver_registro)
+        self.layout.add_widget(boton_volver)
 
-        return layout
+        self.add_widget(self.layout)
+
+        self.lista_precios = []
+        self.producto-layout = None
+
+    def volver_registro (self , instance):
+        self.manager.current = 'inicio'
+    
     def agregar_producto(self,instance): 
         producto = self.producto_input.text
         costo = float(self.costo_input.text)
@@ -48,7 +78,7 @@ class Aplication(App):
         self.costo_input.text = ""
     
 if __name__ == '__main__':
-    Aplication().run()
+    Pantall_Inicio().run()
 
  
 
