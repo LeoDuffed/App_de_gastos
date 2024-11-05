@@ -43,8 +43,8 @@ class RegistroGastos(Screen):
         self.producto_input = TextInput(hint_text = "Ingrese el producto", font_size = '16sp', multiline = False, size_hint_y= None, height = 60)
         self.layout.add_widget(self.producto_input)
 
-        self.costo_input = TextInput(hint_text = "Ingrese el costo del producto", font_size = '16sp', multiline = False, size_hint_y = None, height = 60) 
-        self.layout.add_widget(self.costo_input)
+        self.precio_input = TextInput(hint_text = "Ingrese el costo del producto", font_size = '16sp', multiline = False, size_hint_y = None, height = 60) 
+        self.layout.add_widget(self.precio_input)
 
         agregar_button = Button(text = "Agregar producto", size_hint= (0.5, None), height = 100, pos_hint = {"center_x":0.5}, background_color = (0,1,0,1))
         agregar_button.bind(on_press = self.agregar_producto)
@@ -60,27 +60,72 @@ class RegistroGastos(Screen):
         self.add_widget(self.layout)
 
         self.lista_precios = []
-        self.producto-layout = None
+        self.producto_layout = None
 
     def volver_registro (self , instance):
         self.manager.current = 'inicio'
     
     def agregar_producto(self,instance): 
-        producto = self.producto_input.text
-        costo = float(self.costo_input.text)
+        try: 
+            nom_product  = self.producto_input.text
+            precio = float(self.precio_input.text)
+            self.lista_precios.append ((nom_product, precio))
+            self.producto_input = ""
+            self.precio_input = ""
+            self.resultado_label.text = "Agregado"
+        except ValueError:
+            self.resultado_label.text= "Ingrese un precio valido"
 
-        self.suma_total += costo
+class Historial (Screen):
+    def __init__(self,**kwargs):
+        super().__init__(**kwargs)
+
+        layout = BoxLayout (orientation = 'vertical', padding = 20, spacing = 10)
+
+        self.scroll_view = ScrollView(size_hint = (1, None), size = (Window.width, 300))
+        self.productos_layout = GridLayout (cols = 1, spacing = 10, size_hint_y = None)
+        self.productos_layout.bind(minimum_height = self.productos_layout.setter ('height'))
+        layout.add_widget(self.scroll_view)
+
+        boton_calcular_total = Button(text = "Calcular Total")
+        boton_calcular_total.bind(on_press = self.calcular_total)
+        layout.add_widget(boton_calcular_total)
+
+        self.total_label = Label(text = "")
+        layout.add_widget(self.total_label)
+
+        boton_volver = Button(text = "Volver",pos_hint = {"center_x": 0.5}, background_color = (0,1,0,1))
+        boton_volver.bind (on_press = self.volver_registro)
+        layout.add_widget(boton_volver)
         
-        producto_label = Label(text = f"{producto}: $ {costo}", font_size = '16sp', size_hint_y = None, height = 30, color = (0,0,0,1))
-        self.lista_productos.add_widget(producto_label)
+        self.add_widget(layout)
 
-        self.producto_input.text = ""
-        self.costo_input.text = ""
-    
-if __name__ == '__main__':
-    Pantall_Inicio().run()
+    def volver_registro (self , instance):
+        self.manager.current = 'inicio'
 
- 
+    def calcular_total(self, instance):
+        total = sum (precio for nombre, precio in App.get_running_app().root.get_screen('registro').lista_precios)
+        self.total_label.text = f"Total gastado: ${total:.2f}"
+
+    def on_enter(self):
+
+        self.productos_layout.clear_widgets()
+        productos = App.get_running_app().root.get_screen('registro').lista_precios
+        for nombre, precio in productos: 
+            etiqueta = Label(text = f"{nombre} - ${precio:.2f}", size_hint_y = None, height = 40)
+            self.productos_layout.add_widget(etiqueta)
+
+class GastosApp(App):
+    def build(self):
+
+        sm = ScreenManager()
+        sm.add_widget(Pantall_Inicio(name = 'inicio'))
+        sm.add_widget(RegistroGastos(name = 'registro'))
+        sm.add_widget(Historial(name = 'historial'))
+        return sm 
+
+
+GastosApp().run()
 
 
 
