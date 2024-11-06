@@ -10,8 +10,8 @@ from kivy.core.window import Window
 
 class PantallaInicio (Screen): 
     def __init__(self, **kawargs):
-
         super().__init__(**kawargs)
+
         layout = BoxLayout(orientation = 'vertical', padding = 20, spacing = 10)
         WelcomeLabel = Label (text = "App Lista del Super", font_size = '30sp', color = (0,0,0,1) )
         layout.add_widget(WelcomeLabel)
@@ -41,7 +41,6 @@ class PantallaInicio (Screen):
 
 class RegistroGastos (Screen): 
     def __init__(self, **kwargs): 
-
         super().__init__(**kwargs)
 
         Window.clearcolor = (1,1,1,1)
@@ -127,4 +126,3 @@ class VerdurasFrutas (Screen):
     def __init__(self, **kw):
         super().__init__(**kw)
 
-        
