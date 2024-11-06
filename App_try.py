@@ -85,6 +85,7 @@ class Historial (Screen):
         self.scroll_view = ScrollView(size_hint = (1, None), size = (Window.width, 300))
         self.productos_layout = GridLayout (cols = 1, spacing = 10, size_hint_y = None)
         self.productos_layout.bind(minimum_height = self.productos_layout.setter ('height'))
+        self.scroll_view.add_widget(self.productos_layout)
         layout.add_widget(self.scroll_view)
 
         boton_calcular_total = Button(text = "Calcular Total")

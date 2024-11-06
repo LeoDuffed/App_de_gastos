@@ -4,66 +4,127 @@ from kivy.uix.label import Label
 from kivy.uix.scrollview import ScrollView 
 from kivy.uix.button import Button 
 from kivy.uix.textinput import TextInput 
+from kivy.uix.gridlayout import GridLayout
+from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.core.window import Window 
 
-class app(App):
+class PantallaInicio (Screen): 
+    def __init__(self, **kawargs):
 
-    def build(self): 
-        # Poner todos los widgets :)
+        super().__init__(**kawargs)
+        layout = BoxLayout(orientation = 'vertical', padding = 20, spacing = 10)
+        WelcomeLabel = Label (text = "App Lista del Super", font_size = '30sp', color = (0,0,0,1) )
+        layout.add_widget(WelcomeLabel)
+
+        boton_registro = Button(text = "Anotar productos", pos_hint = {"center_x": 0.5}, background_color = (0.6, 1, 0.6, 1))
+        boton_registro.bind (on_press = self.CambiarRegistro) 
+        layout.add_widget(boton_registro)
+
+        boton_verduras = Button(text = "Verduras y Fruta", pos_hint = {"center_x": 0.5}, background_color = (0.6, 1, 0.6, 1))
+        boton_verduras.bind (on_press = self.CambiarVerduras) 
+        layout.add_widget(boton_verduras)
+
+        boton_total = Button(text = "Total", pos_hint = {"center_x": 0.5}, background_color = (0.6, 1, 0.6, 1))
+        boton_total.bind (on_press = self.CambiarTotal) 
+        layout.add_widget(boton_total)
+
+        self.add_widget(layout)
+
+    def CambiarRegistro (self, instance): 
+        self.manager.current = 'registro'
+    
+    def CambiarTotal (self, instance):
+        self.manager.current = 'total'
+
+    def CambioVerduras (self, instance): 
+        self.manager.current = 'verduras'
+
+class RegistroGastos (Screen): 
+    def __init__(self, **kwargs): 
+
+        super().__init__(**kwargs)
+
         Window.clearcolor = (1,1,1,1)
+        
+        self.layout = BoxLayout(orientation = 'vertical', padding = 20, spacing = 10)
+
+        self.producto_input = TextInput (hint_text = "Ingrese el articulo", multiline = False, size_hint = (0.5, None), size_hint_y = None, height = 80)
+        self.layout.add_widget(self.producto_input)
+
+        self.precio_input = TextInput (hint_text = "Ingrese el precio del articulo", multiline = False, size_hint = (0.5, None), size_hint_y = None, height = 80)
+        self.layout.add_widget(self.precio_input)
+
+        boton_agregar = Button (text = "Agregar producto", size_hint = (0.5, None), height = 100, pos_hint = {"center_x":0.5}, background_color = (0,1,0,1))
+        boton_agregar.bind(on_press = self.AgregarProducto)
+        self.layout.add_widget(boton_agregar)
+
+        self.resultado_label = Label(text = "", color = (0,0,0,1))
+        self.layout.add_widget(self.resultado_label)
+
+        boton_volver = Button(text = "Volver", pos_hint = {"center_x": 0.5}, background_color = (0.6, 1, 0.6, 1))
+        boton_volver.bind (on_press = self.volver_registro) 
+        self.layout.add_widget(boton_volver)
+
+        self.add_widget(self.layout)
 
         self.lista_precios = []
 
-        layout = BoxLayout(orientation='vertical', padding = 20, spacing = 10  )
+    def volver_registro (self, instance):
+        self.manager.current = 'inicio'
 
-        label_instruccion= Label (text = 'Esta App es para ir anotando tus gastos', font_size = '20sp', color = (1, 0, 0, 1))
-        layout.add_widget(label_instruccion)
-
-        self.producto_ingreso = TextInput(hint_text= 'Ingrese en que gasto', font_size = '16sp', multiline = False, size_hint_y = None, height = 60)
-        layout.add_widget(self.producto_ingreso)
-
-        self.costo_ingreso = TextInput(hint_text= 'Ingresa el costo de lo que acabas de ingresar', font_size = '16sp', multiline = False, size_hint_y= None, height = 60)
-        layout.add_widget(self.costo_ingreso)
-
-        agregar_boton = Button(text = "Agregar", size_hint = (0.5, None ), height = 100, pos_hint= {"center_x": 0.5}, background_color= (0,1,0,1)) 
-        agregar_boton.bind(on_press = self.agregar_producto)
-        layout.add_widget(agregar_boton)
-
-        agregar_boton2 = Button(text = "Gastos totales", size_hint = (0.4, None), height = 110, pos_hint = {"center_x": 0.5}, background_color= (0,1,1,1,))
-        agregar_boton2.bind (on_press = self.agregar_producto)
-        layout.add_widget(agregar_boton2)
-
-        self.resultado_label = Label(text= "")
-        layout.add_widget(self.resultado_label)
-
-        scroll_view = ScrollView(size_hint= (1, None), height = 200)
-        self.lista_producto = BoxLayout (orientation = 'vertical', size_hint_y= None)
-        self.lista_producto.bind (minimum_height = self.lista_producto.setter('height'))
-        scroll_view.add_widget(self.lista_producto)
-        layout.add_widget(scroll_view)
-
-        self.suma_total = 0
-
-        return layout
-
-    def agregar_producto(self, instance):
+    def AgregarProducto (self, instance):
+        producto = self.precio_input.text
         try: 
-            nombre_producto = self.producto_ingreso.text
-            precio = float(self.costo_ingreso.text)
-            self.lista_precios.append(precio)
+            precio = float(self.producto_input.text)
+            self.lista_precios.append ((producto, precio))
 
-            etiqueta = Label (text= f"{nombre_producto} - {precio:.2f}", size_hint_y = None, height = 40 )
-            self.lista_producto.add_widget(etiqueta)
-
-            self.producto_ingreso = ""
-            self.costo_ingreso = ""
-            self.resultado_label.texto = "Producto agregado"
+            self.producto_input.text = ""
+            self.precio_input.text = ""
+            self.resultado_label.text = "Producto Agregado"
         except ValueError: 
-            self.resultado_label.text = "Ingresa un costo valido"
+            self.resultado_label.text = "Ingresa un precio valido"
 
-    def mostrar_total (self, instace): 
-        total = sum(self.lista_precios)
-        self.resultado_label.text = f"Total gastado: {total:.2f}"
+class ListaTotal(Screen):
+    def __init__(self, **kw):
+        super().__init__(**kw)
+
+        layout = BoxLayout (orientation = 'vertical', padding = 20, spacing = 10)
+
+        self.scroll_view = ScrollView (size_hint = (1, None), size = (Window.width, 300))
+        self.productos_layout = GridLayout (cols = 1, spacing = 10, size_hint_y = 10)
+        self.productos_layout.bind(minimum_height = self.productos_layout.setter ('height'))
+        self.scroll_view.add_widget(self.productos_layout)
+        layout.add_widget(self.scroll_view)
+
+        boton_calcular_total = Button(text = "Calcular Total")
+        boton_calcular_total.bind(on_press = self.calcular_total)
+        layout.add_widget(boton_calcular_total)
+
+        self.total_label = Label(text = "")
+        layout.add_widget(boton_calcular_total)
+
+        boton_volver = Button(text = "Volver", pos_hint = {"center_x": 0.5}, background_color = (0.6, 1, 0.6, 1))
+        boton_volver.bind (on_press = self.volver_registro) 
+        layout.add_widget(boton_volver)
+
+        self.add_widget(layout)
+
+    def volver_registro (self, instance):
+        self.manager,current = 'inicio'
+
+    def calcular_total(self, instance):
+        total = sum (precio for nombre, precio in App.get_running_app().root.get_screen('registro').lista_precios)
+        self.total_label.text = f"Total ${total:.2f}"
+
+    def on_enter(self):
+        self.productos_layout.clear_widgets()
+        productos = App.get_running_app().root.get_screen('registro').lista_precios
+        for nombre, precio in productos: 
+            etiqueta = Label(text = f"{nombre} - ${precio:.2f}", size_hint_y = None, height = 40)
+            self.productos_layout.add_widget(etiqueta)
+
+class VerdurasFrutas (Screen):
+    def __init__(self, **kw):
+        super().__init__(**kw)
+
         
-if __name__ == '__main__': 
-    app().run()
